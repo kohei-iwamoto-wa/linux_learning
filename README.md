@@ -13,12 +13,14 @@
 
 ### インスタンスIDを指定して接続
 
-SSM接続する。
-
-> aws ssm start-session --target {インスタンスID}
+```
+aws ssm start-session --target {インスタンスID}
+```
 
 ### ローカルの8080ポートをEC2の80ポートに転送
 
-> aws ssm start-session --target <インスタンスID> \
->    --document-name AWS-StartPortForwardingSession \
->    --parameters '{"portNumber":["80"],"localPortNumber":["8080"]}'
+```
+aws ssm start-session --target <インスタンスID> \
+   --document-name AWS-StartPortForwardingSession \
+   --parameters '{"portNumber":["80"],"localPortNumber":["8080"]}'
+```
