@@ -1,16 +1,16 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
+import { Vpc } from './constructs/vpc/vpc';
+import { Ec2  } from './constructs/compute/ec2';
 
 export class LinuxLearningStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // The code that defines your stack goes here
+    const vpc = new Vpc(this, 'LinuxLearningVPC', {});
 
-    // example resource
-    // const queue = new sqs.Queue(this, 'LinuxLearningQueue', {
-    //   visibilityTimeout: cdk.Duration.seconds(300)
-    // });
+    const bastion = new Ec2(this, 'Ec2Instance', {
+        targetVpc: vpc.vpc,
+    });
   }
 }

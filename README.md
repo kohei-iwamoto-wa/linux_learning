@@ -1,10 +1,6 @@
-# Welcome to your CDK TypeScript project
+## コマンドの使い方
 
-This is a blank project for CDK development with TypeScript.
-
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
-
-## Useful commands
+`cdk.json` があるディレクトリで以下のコマンドを実行する。
 
 * `npm run build`   compile typescript to js
 * `npm run watch`   watch for changes and compile
@@ -12,3 +8,16 @@ The `cdk.json` file tells the CDK Toolkit how to execute your app.
 * `npx cdk deploy`  deploy this stack to your default AWS account/region
 * `npx cdk diff`    compare deployed stack with current state
 * `npx cdk synth`   emits the synthesized CloudFormation template
+
+## ローカルからSSHする方法
+
+# インスタンスIDを指定して接続
+
+SSM接続する。
+
+> aws ssm start-session --target {インスタンスID}
+
+# ローカルの8080ポートをEC2の80ポートに転送
+> aws ssm start-session --target <インスタンスID> \
+>    --document-name AWS-StartPortForwardingSession \
+>    --parameters '{"portNumber":["80"],"localPortNumber":["8080"]}'
