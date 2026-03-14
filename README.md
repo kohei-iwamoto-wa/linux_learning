@@ -1,13 +1,19 @@
+## 目的
+
+Linux 学習環境を AWS に cdk コマンドで構築する
+
+## メリット
+
+コマンド１つで AWS リソースのデプロイと削除を行うことができ、学習ごとの構築やコストが最小限に抑えられる。
+
 ## コマンドの使い方
 
 `cdk.json` があるディレクトリで以下のコマンドを実行する。
 
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `npx cdk deploy`  deploy this stack to your default AWS account/region
-* `npx cdk diff`    compare deployed stack with current state
-* `npx cdk synth`   emits the synthesized CloudFormation template
+* `npm run build`   TypeScriptをjavaScriptにコンパイルする。
+* `npx cdk deploy`  スタックをデプロイする。
+* `npx cdk diff`    現行と変更時の差分を確認する。
+* `npx cdk synth`   cdk から生成されるCloudForamtion テンプレートを確認する。
 
 ## ローカルからSSHする方法
 
