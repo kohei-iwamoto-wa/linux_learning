@@ -85,7 +85,7 @@ ip-10-0-0-124.us-west-2.compute.internal
 ### 4. 学習環境削除
 
 ```
-cdk destroy <スタック名>
+cdk destroy LinuxLearningVPC
 ```
 
 ### 5. 補足
