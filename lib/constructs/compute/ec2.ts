@@ -45,6 +45,7 @@ export class Ec2 extends Construct {
                 assumedBy: new iam.ServicePrincipal('ec2.amazonaws.com'),
                 managedPolicies: [
                     iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore'),
+                    iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonEC2ContainerRegistryPowerUser'),
                 ],
             }),
         });
