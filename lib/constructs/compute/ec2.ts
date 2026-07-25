@@ -58,11 +58,9 @@ export class Ec2 extends Construct {
             allowAllOutbound: true,
         });
 
-        // Redmine用のHTTPポート(80)を全開放（必要に応じて特定のIPに絞る）
+        // HTTPポート(80)を全開放（必要に応じて特定のIPに絞る）
         sg.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(80), 'Allow HTTP access');
-        
-        // Session Manager経由のSSHやトンネルを利用する場合、22番を開ける必要はありません（SSMが代行するため）
-        
+        sg.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(443), 'Allow HTTPS access');
         return sg;
     }
 }
