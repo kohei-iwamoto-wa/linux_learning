@@ -1,0 +1,727 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Snapshot test 1`] = `
+{
+  "Parameters": {
+    "BootstrapVersion": {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amikernel510hvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter": {
+      "Default": "/aws/service/ami-amazon-linux-latest/amzn2-ami-kernel-5.10-hvm-x86_64-gp2",
+      "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
+    },
+  },
+  "Resources": {
+    "DailyCleanupDeleteStackSchedule739BF4F9": {
+      "Properties": {
+        "FlexibleTimeWindow": {
+          "Mode": "OFF",
+        },
+        "ScheduleExpression": "cron(0 1 * * ? *)",
+        "ScheduleExpressionTimezone": "Asia/Tokyo",
+        "Target": {
+          "Arn": "arn:aws:scheduler:::aws-sdk:cloudformation:deleteStack",
+          "Input": "{"StackName":"MyTestStack"}",
+          "RoleArn": {
+            "Fn::GetAtt": [
+              "DailyCleanupSchedulerRole5010DCB7",
+              "Arn",
+            ],
+          },
+        },
+      },
+      "Type": "AWS::Scheduler::Schedule",
+    },
+    "DailyCleanupSchedulerRole5010DCB7": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "scheduler.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "DailyCleanupSchedulerRoleDefaultPolicy3E862F8F": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "cloudformation:DeleteStack",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:cloudformation:",
+                    {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":stack/MyTestStack/*",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "DailyCleanupSchedulerRoleDefaultPolicy3E862F8F",
+        "Roles": [
+          {
+            "Ref": "DailyCleanupSchedulerRole5010DCB7",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "Ec2InstanceAmiInstanceC842A6ED": {
+      "DependsOn": [
+        "Ec2InstanceEc2InstanceRoleB6AA24E7",
+      ],
+      "Properties": {
+        "AvailabilityZone": {
+          "Fn::Select": [
+            0,
+            {
+              "Fn::GetAZs": "",
+            },
+          ],
+        },
+        "IamInstanceProfile": {
+          "Ref": "Ec2InstanceAmiInstanceInstanceProfileB6054D40",
+        },
+        "ImageId": {
+          "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amikernel510hvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter",
+        },
+        "InstanceType": "t3.micro",
+        "SecurityGroupIds": [
+          {
+            "Fn::GetAtt": [
+              "Ec2InstanceEc2SecurityGroupE66CC231",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": {
+          "Ref": "LinuxLearningVPCPublicSubnet1Subnet2D23DB17",
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/Ec2Instance/AmiInstance",
+          },
+        ],
+        "UserData": {
+          "Fn::Base64": "#!/bin/bash",
+        },
+      },
+      "Type": "AWS::EC2::Instance",
+    },
+    "Ec2InstanceAmiInstanceInstanceProfileB6054D40": {
+      "Properties": {
+        "Roles": [
+          {
+            "Ref": "Ec2InstanceEc2InstanceRoleB6AA24E7",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::InstanceProfile",
+    },
+    "Ec2InstanceEc2InstanceRoleB6AA24E7": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ec2.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AmazonSSMManagedInstanceCore",
+              ],
+            ],
+          },
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AmazonEC2ContainerRegistryPowerUser",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "Ec2InstanceEc2SecurityGroupE66CC231": {
+      "Properties": {
+        "GroupDescription": "MyTestStack/Ec2Instance/Ec2SecurityGroup",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow HTTP access",
+            "FromPort": 80,
+            "IpProtocol": "tcp",
+            "ToPort": 80,
+          },
+        ],
+        "VpcId": {
+          "Ref": "LinuxLearningVPC060B1DB9",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "LinuxLearningVPC060B1DB9": {
+      "Properties": {
+        "CidrBlock": "10.0.0.0/16",
+        "EnableDnsHostnames": true,
+        "EnableDnsSupport": true,
+        "InstanceTenancy": "default",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "LinuxLearningVPC",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::VPC",
+    },
+    "LinuxLearningVPCEc2MessagesEndpointEB620FB6": {
+      "Properties": {
+        "PrivateDnsEnabled": true,
+        "SecurityGroupIds": [
+          {
+            "Fn::GetAtt": [
+              "LinuxLearningVPCEc2MessagesEndpointSecurityGroupA441D060",
+              "GroupId",
+            ],
+          },
+        ],
+        "ServiceName": {
+          "Fn::Join": [
+            "",
+            [
+              "com.amazonaws.",
+              {
+                "Ref": "AWS::Region",
+              },
+              ".ec2messages",
+            ],
+          ],
+        },
+        "SubnetIds": [
+          {
+            "Ref": "LinuxLearningVPCPrivateSubnet1SubnetBD25ACB3",
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "LinuxLearningVPC",
+          },
+        ],
+        "VpcEndpointType": "Interface",
+        "VpcId": {
+          "Ref": "LinuxLearningVPC060B1DB9",
+        },
+      },
+      "Type": "AWS::EC2::VPCEndpoint",
+    },
+    "LinuxLearningVPCEc2MessagesEndpointSecurityGroupA441D060": {
+      "Properties": {
+        "GroupDescription": "MyTestStack/LinuxLearningVPC/LinuxLearningVPC/Ec2MessagesEndpoint/SecurityGroup",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": {
+              "Fn::GetAtt": [
+                "LinuxLearningVPC060B1DB9",
+                "CidrBlock",
+              ],
+            },
+            "Description": {
+              "Fn::Join": [
+                "",
+                [
+                  "from ",
+                  {
+                    "Fn::GetAtt": [
+                      "LinuxLearningVPC060B1DB9",
+                      "CidrBlock",
+                    ],
+                  },
+                  ":443",
+                ],
+              ],
+            },
+            "FromPort": 443,
+            "IpProtocol": "tcp",
+            "ToPort": 443,
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "LinuxLearningVPC",
+          },
+        ],
+        "VpcId": {
+          "Ref": "LinuxLearningVPC060B1DB9",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "LinuxLearningVPCIGW007B304D": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "LinuxLearningVPC",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::InternetGateway",
+    },
+    "LinuxLearningVPCPrivateSubnet1DefaultRoute07A59D16": {
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": {
+          "Ref": "LinuxLearningVPCPublicSubnet1NATGateway0FF8FAF7",
+        },
+        "RouteTableId": {
+          "Ref": "LinuxLearningVPCPrivateSubnet1RouteTable04440835",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "LinuxLearningVPCPrivateSubnet1RouteTable04440835": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/LinuxLearningVPC/LinuxLearningVPC/PrivateSubnet1",
+          },
+        ],
+        "VpcId": {
+          "Ref": "LinuxLearningVPC060B1DB9",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "LinuxLearningVPCPrivateSubnet1RouteTableAssociationB00E5F9B": {
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "LinuxLearningVPCPrivateSubnet1RouteTable04440835",
+        },
+        "SubnetId": {
+          "Ref": "LinuxLearningVPCPrivateSubnet1SubnetBD25ACB3",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "LinuxLearningVPCPrivateSubnet1SubnetBD25ACB3": {
+      "Properties": {
+        "AvailabilityZone": {
+          "Fn::Select": [
+            0,
+            {
+              "Fn::GetAZs": "",
+            },
+          ],
+        },
+        "CidrBlock": "10.0.1.0/24",
+        "MapPublicIpOnLaunch": false,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/LinuxLearningVPC/LinuxLearningVPC/PrivateSubnet1",
+          },
+        ],
+        "VpcId": {
+          "Ref": "LinuxLearningVPC060B1DB9",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "LinuxLearningVPCPublicSubnet1DefaultRouteC3358E15": {
+      "DependsOn": [
+        "LinuxLearningVPCVPCGW482083CA",
+      ],
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "LinuxLearningVPCIGW007B304D",
+        },
+        "RouteTableId": {
+          "Ref": "LinuxLearningVPCPublicSubnet1RouteTable55515E04",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "LinuxLearningVPCPublicSubnet1EIP45875C12": {
+      "Properties": {
+        "Domain": "vpc",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/LinuxLearningVPC/LinuxLearningVPC/PublicSubnet1",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::EIP",
+    },
+    "LinuxLearningVPCPublicSubnet1NATGateway0FF8FAF7": {
+      "DependsOn": [
+        "LinuxLearningVPCPublicSubnet1DefaultRouteC3358E15",
+        "LinuxLearningVPCPublicSubnet1RouteTableAssociationAE9A24B2",
+      ],
+      "Properties": {
+        "AllocationId": {
+          "Fn::GetAtt": [
+            "LinuxLearningVPCPublicSubnet1EIP45875C12",
+            "AllocationId",
+          ],
+        },
+        "SubnetId": {
+          "Ref": "LinuxLearningVPCPublicSubnet1Subnet2D23DB17",
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/LinuxLearningVPC/LinuxLearningVPC/PublicSubnet1",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::NatGateway",
+    },
+    "LinuxLearningVPCPublicSubnet1RouteTable55515E04": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/LinuxLearningVPC/LinuxLearningVPC/PublicSubnet1",
+          },
+        ],
+        "VpcId": {
+          "Ref": "LinuxLearningVPC060B1DB9",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "LinuxLearningVPCPublicSubnet1RouteTableAssociationAE9A24B2": {
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "LinuxLearningVPCPublicSubnet1RouteTable55515E04",
+        },
+        "SubnetId": {
+          "Ref": "LinuxLearningVPCPublicSubnet1Subnet2D23DB17",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "LinuxLearningVPCPublicSubnet1Subnet2D23DB17": {
+      "Properties": {
+        "AvailabilityZone": {
+          "Fn::Select": [
+            0,
+            {
+              "Fn::GetAZs": "",
+            },
+          ],
+        },
+        "CidrBlock": "10.0.0.0/24",
+        "MapPublicIpOnLaunch": true,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          {
+            "Key": "Name",
+            "Value": "MyTestStack/LinuxLearningVPC/LinuxLearningVPC/PublicSubnet1",
+          },
+        ],
+        "VpcId": {
+          "Ref": "LinuxLearningVPC060B1DB9",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "LinuxLearningVPCSsmEndpointF22804FA": {
+      "Properties": {
+        "PrivateDnsEnabled": true,
+        "SecurityGroupIds": [
+          {
+            "Fn::GetAtt": [
+              "LinuxLearningVPCSsmEndpointSecurityGroup6981C029",
+              "GroupId",
+            ],
+          },
+        ],
+        "ServiceName": {
+          "Fn::Join": [
+            "",
+            [
+              "com.amazonaws.",
+              {
+                "Ref": "AWS::Region",
+              },
+              ".ssm",
+            ],
+          ],
+        },
+        "SubnetIds": [
+          {
+            "Ref": "LinuxLearningVPCPrivateSubnet1SubnetBD25ACB3",
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "LinuxLearningVPC",
+          },
+        ],
+        "VpcEndpointType": "Interface",
+        "VpcId": {
+          "Ref": "LinuxLearningVPC060B1DB9",
+        },
+      },
+      "Type": "AWS::EC2::VPCEndpoint",
+    },
+    "LinuxLearningVPCSsmEndpointSecurityGroup6981C029": {
+      "Properties": {
+        "GroupDescription": "MyTestStack/LinuxLearningVPC/LinuxLearningVPC/SsmEndpoint/SecurityGroup",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": {
+              "Fn::GetAtt": [
+                "LinuxLearningVPC060B1DB9",
+                "CidrBlock",
+              ],
+            },
+            "Description": {
+              "Fn::Join": [
+                "",
+                [
+                  "from ",
+                  {
+                    "Fn::GetAtt": [
+                      "LinuxLearningVPC060B1DB9",
+                      "CidrBlock",
+                    ],
+                  },
+                  ":443",
+                ],
+              ],
+            },
+            "FromPort": 443,
+            "IpProtocol": "tcp",
+            "ToPort": 443,
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "LinuxLearningVPC",
+          },
+        ],
+        "VpcId": {
+          "Ref": "LinuxLearningVPC060B1DB9",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "LinuxLearningVPCSsmMessagesEndpoint8A4F4A8E": {
+      "Properties": {
+        "PrivateDnsEnabled": true,
+        "SecurityGroupIds": [
+          {
+            "Fn::GetAtt": [
+              "LinuxLearningVPCSsmMessagesEndpointSecurityGroupA3268D05",
+              "GroupId",
+            ],
+          },
+        ],
+        "ServiceName": {
+          "Fn::Join": [
+            "",
+            [
+              "com.amazonaws.",
+              {
+                "Ref": "AWS::Region",
+              },
+              ".ssmmessages",
+            ],
+          ],
+        },
+        "SubnetIds": [
+          {
+            "Ref": "LinuxLearningVPCPrivateSubnet1SubnetBD25ACB3",
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "LinuxLearningVPC",
+          },
+        ],
+        "VpcEndpointType": "Interface",
+        "VpcId": {
+          "Ref": "LinuxLearningVPC060B1DB9",
+        },
+      },
+      "Type": "AWS::EC2::VPCEndpoint",
+    },
+    "LinuxLearningVPCSsmMessagesEndpointSecurityGroupA3268D05": {
+      "Properties": {
+        "GroupDescription": "MyTestStack/LinuxLearningVPC/LinuxLearningVPC/SsmMessagesEndpoint/SecurityGroup",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": {
+              "Fn::GetAtt": [
+                "LinuxLearningVPC060B1DB9",
+                "CidrBlock",
+              ],
+            },
+            "Description": {
+              "Fn::Join": [
+                "",
+                [
+                  "from ",
+                  {
+                    "Fn::GetAtt": [
+                      "LinuxLearningVPC060B1DB9",
+                      "CidrBlock",
+                    ],
+                  },
+                  ":443",
+                ],
+              ],
+            },
+            "FromPort": 443,
+            "IpProtocol": "tcp",
+            "ToPort": 443,
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "LinuxLearningVPC",
+          },
+        ],
+        "VpcId": {
+          "Ref": "LinuxLearningVPC060B1DB9",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "LinuxLearningVPCVPCGW482083CA": {
+      "Properties": {
+        "InternetGatewayId": {
+          "Ref": "LinuxLearningVPCIGW007B304D",
+        },
+        "VpcId": {
+          "Ref": "LinuxLearningVPC060B1DB9",
+        },
+      },
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+    },
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;
