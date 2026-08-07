@@ -27,7 +27,7 @@ export class Ec2 extends Construct {
 
     private resolveDefaults(props: Ec2ConstructProps) {
         const instanceType = props.instanceType ?? new ec2.InstanceType('t3.micro');
-        const machineImage = props.machineImage ?? ec2.MachineImage.latestAmazonLinux2();
+        const machineImage = props.machineImage ?? ec2.MachineImage.latestAmazonLinux2023();
         const subnetType = props.subnetType ?? ec2.SubnetType.PUBLIC;
         return { instanceType, machineImage, subnetType };
     }
