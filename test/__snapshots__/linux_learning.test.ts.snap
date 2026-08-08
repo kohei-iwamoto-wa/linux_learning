@@ -201,6 +201,13 @@ exports[`Snapshot test 1`] = `
             "IpProtocol": "tcp",
             "ToPort": 80,
           },
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow HTTPS access",
+            "FromPort": 443,
+            "IpProtocol": "tcp",
+            "ToPort": 443,
+          },
         ],
         "VpcId": {
           "Ref": "LinuxLearningVPC060B1DB9",

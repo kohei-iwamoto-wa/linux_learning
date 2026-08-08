@@ -5,11 +5,11 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 
 interface Ec2ConstructProps {
     targetVpc: ec2.IVpc;
-    securityGroup?: ec2.ISecurityGroup;
     instanceType?: ec2.InstanceType;
     machineImage?: ec2.IMachineImage;
     subnetType?: ec2.SubnetType;
     createSecurityGroupIfMissing?: boolean;
+    securityGroup: ec2.ISecurityGroup;
 }
 
 export class Ec2 extends Construct {
@@ -22,13 +22,12 @@ export class Ec2 extends Construct {
         this.vpc = props.targetVpc;
 
         const resolved = this.resolveDefaults(props);
-        this.securityGroup = this.ensureSecurityGroup(props, resolved.subnetType);
         this.instance = this.createInstance(props, resolved);
     }
 
     private resolveDefaults(props: Ec2ConstructProps) {
         const instanceType = props.instanceType ?? new ec2.InstanceType('t3.micro');
-        const machineImage = props.machineImage ?? ec2.MachineImage.latestAmazonLinux2();
+        const machineImage = props.machineImage ?? ec2.MachineImage.latestAmazonLinux2023();
         const subnetType = props.subnetType ?? ec2.SubnetType.PUBLIC;
         return { instanceType, machineImage, subnetType };
     }
@@ -39,7 +38,7 @@ export class Ec2 extends Construct {
             machineImage: resolved.machineImage,
             vpc: this.vpc,
             vpcSubnets: this.vpc.selectSubnets({ subnetType: resolved.subnetType }),
-            securityGroup: this.securityGroup,
+            securityGroup: props.securityGroup,
             // SSM Managed Instance Core ポリシーを付与
             role: new iam.Role(this, 'Ec2InstanceRole', {
                 assumedBy: new iam.ServicePrincipal('ec2.amazonaws.com'),
@@ -49,20 +48,5 @@ export class Ec2 extends Construct {
                 ],
             }),
         });
-    }
-
-        // Ec2クラス内
-    private ensureSecurityGroup(props: Ec2ConstructProps, subnetType: ec2.SubnetType): ec2.ISecurityGroup {
-        const sg = props.securityGroup ?? new ec2.SecurityGroup(this, 'Ec2SecurityGroup', {
-            vpc: this.vpc,
-            allowAllOutbound: true,
-        });
-
-        // Redmine用のHTTPポート(80)を全開放（必要に応じて特定のIPに絞る）
-        sg.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(80), 'Allow HTTP access');
-        
-        // Session Manager経由のSSHやトンネルを利用する場合、22番を開ける必要はありません（SSMが代行するため）
-        
-        return sg;
     }
 }
