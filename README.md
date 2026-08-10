@@ -51,7 +51,7 @@ cdk bootstrap
 ### 3.4. TypeScriptをビルド
 
 ```
-cdk run build
+npm run build
 ```
 
 ### 3.5. CDKスタックをデプロイ
@@ -72,7 +72,7 @@ aws ec2 describe-instances
 
 ```
 aws ssm start-session --target i-0077eb639ba9ea7db --region us-west-2
-Starting session with SessionId: dev_kohei_iwamoto-slacaqeuebzhjyk9bdq579b8ra
+Starting session with SessionId: zzzzzzzzzzzzzzzzzzz
 ```
 
 #### 3.6.3.  EC2 に接続済みか確認
